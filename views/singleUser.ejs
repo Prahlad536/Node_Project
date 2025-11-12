@@ -85,14 +85,12 @@
 
   <!-- Cards Section -->
   <div class="card-container">
-    <% users.forEach((user1) => { %>
       <div class="card">
-        <h2><%- user1.name %></h2>
-        <h2><%-user1.email%></h2>
-        <p><%-user1.password%></p>
-        <a href="/user1/<%-user1.id%>">See More</a>
+       <h1><%-user[0].name %></h1>
+       <h1><%-user[0].email %></h1>
+       <h1><%-user[0].password %></h1>
       </div>
-    <% }) %>
+    <button><a href="/delete/<%- user[0].id%>">Delete This</a></button>
   </div>
 
   <!-- Footer -->

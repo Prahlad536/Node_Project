@@ -1,5 +1,5 @@
 const express= require('express')
-const { blogs, users} = require('./model/index')
+const { blogs, users} = require('./model/index') //users ra blog lyaako xa index.js bata
 const app=express()
 
 // const app = require("express")()
@@ -22,9 +22,10 @@ app.get("/home",async (get, res)=>{
     res.render("home.ejs", {users: userTableUser})
 })
 
-// app.get("/about", (req, res)=>{
-//     res.render("about.ejs")
-// })
+// about
+app.get("/about", (req, res)=>{
+    res.render("about.ejs")
+})
 
 app.get("/adblog", (req, res)=>{
     res.render("adblog.ejs")
@@ -48,6 +49,7 @@ app.post("/adblog",async (req, res)=>{
 
       res.send("blog added successfully!!");
 })
+
 
 //User part
 //user display in browser
@@ -75,6 +77,34 @@ app.post("/user", async(req, res)=>{
     res.redirect("/home")
        
 })
+
+
+//single user
+app.get("/user1/:id", async(req, res)=>{
+    const id = req.params.id
+    // const foundData=await users.findByPk(id)
+    const foundData = await users.findAll({
+        where: {
+            id : id
+        }
+    })
+    console.log(foundData)
+    res.render("singleUser.ejs", {user: foundData})
+})
+
+//delete 
+app.get("/delete/:id",async (req, res)=>{
+    const id= req.params.id
+    await users.destroy({
+        where: {
+            id : id
+        }
+    })
+    // res.send("delete successfull")
+    res.redirect("/home")
+})
+
+
 
 
 
