@@ -35,6 +35,7 @@ app.get("/adblog", (req, res)=>{
 app.post("/adblog",async (req, res)=>{
     const {title, subTitle, description}= req.body
     console.log(title, subTitle,description)
+    
     //server validation
      if(!title || !subTitle || !description){
         return res.send("Please Provide titile, subtitle and description")
@@ -92,6 +93,7 @@ app.get("/user1/:id", async(req, res)=>{
     res.render("singleUser.ejs", {user: foundData})
 })
 
+
 //delete 
 app.get("/delete/:id",async (req, res)=>{
     const id= req.params.id
@@ -102,6 +104,30 @@ app.get("/delete/:id",async (req, res)=>{
     })
     // res.send("delete successfull")
     res.redirect("/home")
+})
+
+ 
+
+
+app.get("/update/:id", async(req, res)=>{
+    const id = req.params.id
+    const user = await  users.findByPk(id)
+    res.render("updateUser.ejs", {id: id, oldUser:user})
+})
+
+app.post("/update/:id",async (req, res)=>{
+    const id = req.params.id
+    const{name, email, password} = req.body
+    await users.update({
+        name: name,
+        email : email,
+        password : password
+    },{
+        where: {
+            id : id
+        }
+    })
+    res.redirect("/user1/" + id)
 })
 
 
