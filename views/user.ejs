@@ -96,10 +96,11 @@
 <body>
   <div class="form-container">
     <h2>Sign Up</h2>
-    <form action="./user" method="post">
+    <form action="./user" method="post" enctype="multipart/form-data">
       <input type="text" name="name" placeholder="Full Name" required>
       <input type="email" name="email" placeholder="Email Address"   required>
       <input type="password" name="password" placeholder="Password"   required>
+      <input type="file" name="image" placeholder="Enter Image"   required>
       <button type="submit">Sign Up</button>
     </form>
     <div class="footer-text">

@@ -1,6 +1,9 @@
 const express= require('express')
 const { blogs, users} = require('./model/index') //users ra blog lyaako xa index.js bata
+const { storage, multer } = require('./middleware/multerConfig') //storage ra multer lyaako xau multerConfig.js bata
 const app=express()
+
+const upload = multer({storage : storage})
 
 // const app = require("express")()
 
@@ -59,7 +62,10 @@ app.get("/user", (req, res)=>{
 })
 
 // Post Route
-app.post("/user", async(req, res)=>{
+app.post("/user",upload.single('image'),   async(req, res)=>{
+    console.log(req.file)
+
+    console.log(req.body)
     const {name, email, password}=req.body
     console.log(name, email, password)
 
