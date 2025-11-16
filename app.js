@@ -1,6 +1,8 @@
 const express= require('express')
 const { blogs, users} = require('./model/index') //users ra blog lyaako xa index.js bata
 const { storage, multer } = require('./middleware/multerConfig') //storage ra multer lyaako xau multerConfig.js bata
+
+require("dotenv").config() //env import garney code
 const app=express()
 
 const upload = multer({storage : storage})
@@ -63,9 +65,10 @@ app.get("/user", (req, res)=>{
 
 // Post Route
 app.post("/user",upload.single('image'),   async(req, res)=>{
-    console.log(req.file)
+    // console.log(req.file)
+    console.log(process.env.name)
 
-    console.log(req.body)
+    // console.log(req.body)
     const {name, email, password}=req.body
     console.log(name, email, password)
 
@@ -79,7 +82,8 @@ app.post("/user",upload.single('image'),   async(req, res)=>{
     await users.create({
              name: name,
              email: email,
-             password: password
+             password: password,
+             image : process.env.backendUrl +   req.file.filename
     })
     res.redirect("/home")
        
@@ -87,17 +91,27 @@ app.post("/user",upload.single('image'),   async(req, res)=>{
 
 
 //single user
+// app.get("/user1/:id", async(req, res)=>{
+//     const files = req.files
+
+//     const id = req.params.id
+//     // const foundData=await users.findByPk(id)
+//     const foundData = await users.findAll({   // findall gare vaney yo array ma auxa hamilai [0] garnu parxa excess garna ko lagi
+//         where: {
+//             id : id
+//         }
+//     })
+//     console.log(foundData)
+//     res.render("singleUser.ejs", {userId: foundData, files: files})
+// })
 app.get("/user1/:id", async(req, res)=>{
-    const id = req.params.id
-    // const foundData=await users.findByPk(id)
-    const foundData = await users.findAll({
-        where: {
-            id : id
-        }
-    })
-    console.log(foundData)
-    res.render("singleUser.ejs", {user: foundData})
-})
+    const id = req.params.id;
+
+    const foundData = await users.findByPk(id);
+
+    res.render("singleUser.ejs", { userId: foundData });
+});
+
 
 
 //delete 
@@ -135,6 +149,14 @@ app.post("/update/:id",async (req, res)=>{
     })
     res.redirect("/user1/" + id)
 })
+
+// upload vaney folder lai acces dinxa
+app.use(express.static('./uploads'));
+
+app.use(express.static(__dirname + "/public"));
+// app.use(express.static("/public/styles/"))
+
+
 
 
 
