@@ -1,31 +1,29 @@
 const express= require('express')
-const { blogs, users} = require('./model/index') //users ra blog lyaako xa index.js bata
-const { storage, multer } = require('./middleware/multerConfig') //storage ra multer lyaako xau multerConfig.js bata
-
+// const { blogs, users} = require('./model/index') //users ra blog lyaako xa index.js bata
 require("dotenv").config() //env import garney code
 const app=express()
 
-const upload = multer({storage : storage})
+const userRoute = require('./routes/userRoute')
+const formRoute= require("./routes/registerFormRoute")
+
 
 // const app = require("express")()
 
-//database connect
+// //database connect
 require("./model/index")
 
 
 
 // telling node.js to set it view engine
-app.set("view, engine", "ejs")
+app.set("view engine", "ejs")
 
 //middleware
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
-// Home
-app.get("/home",async (get, res)=>{
-    const userTableUser= await users.findAll()
-    res.render("home.ejs", {users: userTableUser})
-})
+// // Home
+// app.get("/home", renderHome)
+
 
 // about
 app.get("/about", (req, res)=>{
@@ -58,37 +56,12 @@ app.post("/adblog",async (req, res)=>{
 
 
 //User part
-//user display in browser
-app.get("/user", (req, res)=>{
-    res.render("user.ejs")
-})
+// //user display in browser
+// app.get("/user",renderUser)
 
-// Post Route
-app.post("/user",upload.single('image'),   async(req, res)=>{
-    // console.log(req.file)
-    console.log(process.env.name)
-
-    // console.log(req.body)
-    const {name, email, password}=req.body
-    console.log(name, email, password)
-
-    //server validation
-    if(!name || !email || !password){
-        return res.send("please fill up the details")
-    }
-
-    //inserting into users tables
-    //database ma table ma halney method
-    await users.create({
-             name: name,
-             email: email,
-             password: password,
-             image : process.env.backendUrl +   req.file.filename
-    })
-    res.redirect("/home")
-       
-})
-
+// // Post Route
+// app.post("/user", upload.single('image'),   postUser)
+//
 
 //single user
 // app.get("/user1/:id", async(req, res)=>{
@@ -104,63 +77,34 @@ app.post("/user",upload.single('image'),   async(req, res)=>{
 //     console.log(foundData)
 //     res.render("singleUser.ejs", {userId: foundData, files: files})
 // })
-app.get("/user1/:id", async(req, res)=>{
-    const id = req.params.id;
 
-    const foundData = await users.findByPk(id);
-
-    res.render("singleUser.ejs", { userId: foundData });
-});
+//
+// app.get("/user1/:id", renderSingleUser);
+//
 
 
 
 //delete 
-app.get("/delete/:id",async (req, res)=>{
-    const id= req.params.id
-    await users.destroy({
-        where: {
-            id : id
-        }
-    })
-    // res.send("delete successfull")
-    res.redirect("/home")
-})
-
- 
+// app.get("/delete/:id", deleteSingleUser)
+//
+// app.get("/update/:id", renderUpdateUser )
+// app.post("/update/:id",  postUpdateUser)
+//
 
 
-app.get("/update/:id", async(req, res)=>{
-    const id = req.params.id
-    const user = await  users.findByPk(id)
-    res.render("updateUser.ejs", {id: id, oldUser:user})
-})
-
-app.post("/update/:id",async (req, res)=>{
-    const id = req.params.id
-    const{name, email, password} = req.body
-    await users.update({
-        name: name,
-        email : email,
-        password : password
-    },{
-        where: {
-            id : id
-        }
-    })
-    res.redirect("/user1/" + id)
-})
 
 // upload vaney folder lai acces dinxa
 app.use(express.static('./uploads'));
 
+// external css lai link garna help garxa
 app.use(express.static(__dirname + "/public"));
 // app.use(express.static("/public/styles/"))
 
 
-
-
-
-
+//route lai connect garna help garxa
+//  /hello + /home = /hello/home = yadi hame ley yesma "/hello" diyau vaney tara hmailai yo xayeko xaina so   hamiley yesma "" khali XODXau
+app.use("", userRoute)
+app.use("", formRoute)
 
 const PORT=3000
 
