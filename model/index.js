@@ -34,6 +34,10 @@ db.blogs = require("./blogModel.js")(sequelize, DataTypes);
 db.users = require("./userModel.js")(sequelize, DataTypes);
 db.registers = require("./registerModel.js")(sequelize, DataTypes);
 
+//relationship
+db.registers.hasMany(db.users)
+db.users.belongsTo(db.registers)
+
 
 
 db.sequelize.sync({ force: false}).then(() => {

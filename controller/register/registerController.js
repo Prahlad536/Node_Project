@@ -1,5 +1,6 @@
 const { registers } = require("../../model")
 const bcrypt=require("bcryptjs")
+const jwt = require("jsonwebtoken")
 
 exports.renderRegisterForm = (req, res)=>{
     res.render("register")
@@ -26,7 +27,7 @@ exports.loginUserPost = async (req, res)=>{
     if(!email || !password){
         return res.send("Please provide email and password")
     }
-    // check wheather the coming email user exit or not
+    // check wheather the coming email user exit or not   
     const user =await registers.findAll({
         where:{
             email : email
@@ -37,10 +38,16 @@ if(user.length == 0 ){
 }else{
     //tyo email ko user xa vaney bhujyo--ra password pani check garney right xa ki xaina
    const isMatched= bcrypt.compareSync(password, user[0].password)
-}
+
 if(isMatched){
-    res.send("Login Successfully")
+    // generate token
+    var token = jwt.sign({id : user[0].id}, process.env.secretkey  , {
+        expiresIn : '1d'
+    })
+    res.cookie('token', token)
+    res.send("login successfully")
 }else{
     res.send("Email or Password is incorrect")
+}
 }
 }

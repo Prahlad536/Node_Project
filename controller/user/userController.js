@@ -1,3 +1,4 @@
+// const { use } = require("react")
 const { users } = require("../../model")
 
 
@@ -5,7 +6,6 @@ const { users } = require("../../model")
 exports.renderHome = async (get, res)=>{
     //blogs table bata data (row) nikalnu paryo ani home page lai pass garnu paryo
     const userTableUser= await users.findAll()
-
     res.render("home.ejs", {users: userTableUser})
 }
 
@@ -16,7 +16,7 @@ exports.renderHome = async (get, res)=>{
 
 
 exports.postUser = async(req, res)=>{
-    console.log(process.env.name)
+    const {registerId} =req
     // console.log(req.body)
     const {name, email, password}=req.body
     console.log(name, email, password)
@@ -31,7 +31,8 @@ exports.postUser = async(req, res)=>{
              name: name,
              email: email,
              password: password,
-             image : process.env.backendUrl +   req.file.filename
+             image : process.env.backendUrl +   req.file.filename,
+             registerId: registerId
     })
     res.redirect("/home")     
 }

@@ -2,17 +2,17 @@ const express= require('express')
 // const { blogs, users} = require('./model/index') //users ra blog lyaako xa index.js bata
 require("dotenv").config() //env import garney code
 const app=express()
-
+const cookieparser = require('cookie-parser')
 const userRoute = require('./routes/userRoute')
 const formRoute= require("./routes/registerFormRoute")
-
 
 // const app = require("express")()
 
 // //database connect
 require("./model/index")
 
-
+// node.js lai vaney cookie use gar
+app.use(cookieparser())
 
 // telling node.js to set it view engine
 app.set("view engine", "ejs")
